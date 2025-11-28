@@ -17,66 +17,57 @@ Este projeto foi desenvolvido como parte do Trabalho Prático 1 (TP1) da discipl
 
 ```
 gcs-devops/
+├── .github/
+│   ├── workflows/
+│   │   └── ci-cd.yml       # Pipeline GitHub Actions
+│   ├── PIPELINE.md         # Documentação do pipeline
+│   └── RENDER.md           # Guia de deploy no Render
 ├── src/
 │   ├── controllers/        # Handlers das requisições HTTP
-│   │   ├── UserController.ts
-│   │   ├── TaskController.ts
-│   │   └── ReportController.ts
 │   ├── services/           # Lógica de negócio
-│   │   ├── UserService.ts
-│   │   ├── TaskService.ts
-│   │   └── ReportService.ts
 │   ├── routes/             # Definição de rotas
-│   │   ├── users.ts
-│   │   ├── tasks.ts
-│   │   ├── reports.ts
-│   │   └── index.ts
 │   ├── models/             # Interfaces e tipos TypeScript
-│   │   ├── User.ts
-│   │   ├── Task.ts
-│   │   ├── Report.ts
-│   │   └── Common.ts
 │   ├── utils/              # Funções auxiliares
-│   │   ├── validators.ts
-│   │   ├── formatters.ts
-│   │   ├── logger.ts
-│   │   └── helpers.ts
-│   ├── config/             # Configurações
-│   │   └── swagger.ts
-│   ├── tests/              # Testes
-│   │   ├── unit/          # Testes unitários
-│   │   │   ├── services/  # Testes de serviços
-│   │   │   │   ├── UserService.test.ts
-│   │   │   │   ├── TaskService.test.ts
-│   │   │   │   └── ReportService.test.ts
-│   │   │   └── utils/     # Testes de utilitários
-│   │   │       ├── validators.test.ts
-│   │   │       ├── formatters.test.ts
-│   │   │       └── helpers.test.ts
-│   │   ├── integration/   # Testes de integração
-│   │   │   ├── users.integration.test.ts
-│   │   │   ├── tasks.integration.test.ts
-│   │   │   └── reports.integration.test.ts
-│   │   ├── e2e/           # Testes E2E (End-to-End)
-│   │   │   ├── complete-flow.spec.ts
-│   │   │   ├── error-handling.spec.ts
-│   │   │   └── README.md
-│   │   └── README.md
+│   ├── config/             # Configurações (Swagger)
+│   ├── tests/              # Testes (unit, integration, e2e)
 │   ├── app.ts              # Configuração do Express
 │   └── server.ts           # Inicialização do servidor
-├── playwright.config.ts    # Configuração do Playwright
-├── package.json
-├── tsconfig.json
-├── jest.config.js
+├── Dockerfile              # Imagem Docker multi-stage
+├── .dockerignore           # Arquivos ignorados no build
+├── render.yaml             # Configuração de deploy Render
+├── playwright.config.ts    # Configuração E2E
+├── jest.config.js          # Configuração testes Jest
+├── tsconfig.json           # Configuração TypeScript
+├── package.json            # Dependências e scripts
 └── README.md
 ```
+
+## Controle de Versão
+
+O projeto utiliza **Git** com estratégia de branching simplificada:
+
+- **Branch principal**: `main` (protegida)
+- **Commits**: Seguem padrão conventional commits
+  - `feat:` nova funcionalidade
+  - `fix:` correção de bug
+  - `test:` adição/modificação de testes
+  - `docs:` documentação
+  - `chore:` tarefas de manutenção
+
+**Fluxo de trabalho:**
+
+1. Desenvolva localmente
+2. Execute testes: `npm test`
+3. Commit e push para `main`
+4. Pipeline CI/CD executa automaticamente
 
 ## Instalação e Execução
 
 ### Pré-requisitos
 
-- Node.js (v16 ou superior)
+- Node.js (v20 ou superior)
 - npm ou yarn
+- Docker (opcional, para containerização)
 
 ### Instalação
 
@@ -334,94 +325,65 @@ O projeto implementa testes automatizados em **três níveis**, conforme requisi
 
 CC0 1.0 Universal
 
-## Pipeline CI/CD
-
-Este projeto possui um pipeline completo de CI/CD implementado com GitHub Actions. O pipeline é executado automaticamente em todo push para a branch `main`.
-
-### Etapas do Pipeline
-
-#### 1. Commit (Build e Testes)
-
-- Instala dependências
-- Compila TypeScript
-- Executa testes unitários
-- Executa testes de integração
-- Gera relatório de cobertura
-
-#### 2. Acceptance Tests (Testes E2E)
-
-- Instala navegadores Playwright
-- Executa testes de aceitação
-- Gera relatórios visuais
-
-#### 3. Release (Empacotamento e Deploy)
-
-- Cria pacote npm
-- Constrói imagem Docker
-- Publica no Docker Hub
-- Deploy automático no Render (opcional)
-
-#### 4. Test Container (Opcional)
-
-- Testa a imagem Docker
-- Valida health check
-- Verifica logs do container
-
-### Configuração do Pipeline
-
-Para configurar o pipeline no seu repositório:
-
-1. Configure os secrets no GitHub:
-
-   - `DOCKER_USERNAME`: seu usuário do Docker Hub
-   - `DOCKER_PASSWORD`: seu token do Docker Hub
-   - `RENDER_DEPLOY_HOOK`: URL do deploy hook do Render (opcional)
-
-2. Faça push para a branch `main` e o pipeline será executado automaticamente
-
-Para mais detalhes, consulte: [.github/PIPELINE.md](.github/PIPELINE.md)
-
-### Status do Pipeline
+## Pipeline CI/CD e Deploy
 
 ![CI/CD](https://github.com/analuizaalvesm/gcs-devops/actions/workflows/ci-cd.yml/badge.svg)
 
-## Docker
+### Automação Completa
 
-### Build Local
+O projeto implementa pipeline CI/CD completo com **GitHub Actions**:
 
-```bash
-docker build -t gcs-devops .
-```
+**Etapas:**
 
-### Executar Container
+1. **Commit**: Build + Testes Unitários + Testes de Integração
+2. **Acceptance**: Testes E2E com Playwright
+3. **Release**: Build Docker + Push Docker Hub + Deploy Render
+4. **Validation**: Testes de health check do container
 
-```bash
-docker run -p 3000:3000 gcs-devops
-```
+**Triggers:**
 
-### Pull do Docker Hub
+- Execução automática a cada push para `main`
+- Validação em pull requests
 
-```bash
-docker pull <seu-usuario>/gcs-devops:latest
-```
+**Artefatos gerados:**
 
-## Deploy no Render
+- Código compilado (dist/)
+- Relatórios de cobertura
+- Relatórios E2E Playwright
+- Imagem Docker
+- Pacote npm (.tgz)
 
-A aplicação está configurada para deploy automático no Render.
+### Estratégia de Empacotamento
 
-### Configuração Rápida
+**Docker Multi-Stage Build:**
 
-1. O arquivo `render.yaml` já está configurado na raiz do projeto
-2. Configure o secret `RENDER_DEPLOY_HOOK` no GitHub (opcional para deploy automático via CI/CD)
-3. O deploy acontecerá automaticamente após push para `main`
+- **Stage 1 (Builder)**: Instala todas dependências + compila TypeScript
+- **Stage 2 (Production)**: Apenas dependências de produção + código compilado
+- **Resultado**: Imagem otimizada (~150MB) com Node.js 20 Alpine
 
-### Documentação Completa
+**Tags da imagem:**
 
-Para instruções detalhadas de deploy no Render, consulte: [.github/RENDER.md](.github/RENDER.md)
+- `latest`: Versão mais recente da branch main
+- `main-<sha>`: Versão específica por commit
 
-### Notas Importantes
+### Implantação
 
-- TypeScript está configurado como dependência de produção para o build no Render
+**Render (Produção):**
+
+- Deploy automático via webhook após sucesso do pipeline
 - Build command: `npm install && npm run build`
-- Start command: `npm start` (executa `node dist/server.js`)
-- Health check configurado em `/health`
+- Start command: `npm start`
+- Health check: `/api/health`
+- URL: `https://gcs-devops-api.onrender.com`
+
+**Docker Hub:**
+
+- Imagens publicadas automaticamente
+- Disponível para pull: `docker pull <usuario>/gcs-devops:latest`
+
+### Documentação Detalhada
+
+Para informações completas sobre pipeline, deploy e Docker:
+
+- **Pipeline e CI/CD**: [.github/PIPELINE.md](.github/PIPELINE.md)
+- **Deploy no Render**: [.github/RENDER.md](.github/RENDER.md)

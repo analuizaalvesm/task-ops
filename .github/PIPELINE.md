@@ -31,8 +31,14 @@ Executado apenas em pushes para `main`, após sucesso de todas as etapas anterio
 - Cria pacote npm (tarball)
 - Configura Docker Buildx
 - Faz login no Docker Hub
-- Constrói e publica imagem Docker
-- Faz deploy automático no Render (se configurado)
+- Constrói e publica imagem Docker com tags:
+  - `latest` (branch principal)
+  - `main-<sha>` (commit específico)
+- **Deploy automático no Render** (se configurado):
+  - Envia webhook para trigger de deploy
+  - Render faz pull do código atualizado
+  - Executa build command: `npm install && npm run build`
+  - Inicia aplicação com: `npm start`
 
 ### 4. Test Container (Opcional)
 
@@ -66,17 +72,35 @@ Para criar um token no Docker Hub:
 
 ### Opcional (Deploy no Render)
 
-Se quiser deploy automático no Render:
+Se quiser deploy automático no Render após sucesso do pipeline:
 
 ```
 RENDER_DEPLOY_HOOK: https://api.render.com/deploy/srv-xxxxx?key=xxxxx
 ```
 
-Para obter o Deploy Hook no Render:
+**Como obter o Deploy Hook:**
 
-- Acesse seu serviço no Render
-- Vá em `Settings` > `Deploy Hook`
-- Copie a URL gerada
+1. Acesse seu serviço no [Render Dashboard](https://dashboard.render.com)
+2. Selecione o serviço `gcs-devops-api`
+3. Vá em `Settings` > `Deploy Hook`
+4. Clique em "Create Deploy Hook"
+5. Copie a URL gerada (formato: `https://api.render.com/deploy/srv-xxxxx?key=xxxxx`)
+
+**Como configurar no GitHub:**
+
+1. Acesse seu repositório no GitHub
+2. Vá em `Settings` > `Secrets and variables` > `Actions`
+3. Clique em "New repository secret"
+4. Nome: `RENDER_DEPLOY_HOOK`
+5. Value: Cole a URL do Deploy Hook
+6. Clique em "Add secret"
+
+**Importante:**
+
+- O deploy hook é **opcional** - mesmo sem ele, você pode fazer deploy manual no Render
+- O Render detecta automaticamente o arquivo `render.yaml` na raiz do projeto
+- Após configurar, o deploy acontecerá automaticamente a cada push bem-sucedido para `main`
+- O Render faz seu próprio build independente da imagem Docker (usa Node.js diretamente)
 
 ## Estrutura dos Jobs
 
@@ -135,8 +159,83 @@ docker run -p 3000:3000 <seu-usuario>/gcs-devops:latest
 ### Verificar Health
 
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:3000/api/health
 ```
+
+## Deploy no Render
+
+### Fluxo de Deploy Automático
+
+Quando o pipeline é executado com sucesso:
+
+1. **GitHub Actions** executa todos os testes
+2. **Docker Hub** recebe a nova imagem publicada
+3. **Render** recebe webhook de deploy (se configurado)
+4. **Render** faz pull do código do repositório GitHub
+5. **Render** executa o build:
+   ```bash
+   npm install && npm run build
+   ```
+6. **Render** inicia a aplicação:
+   ```bash
+   npm start
+   ```
+
+### Configuração do Render
+
+O projeto inclui o arquivo `render.yaml` com as seguintes configurações:
+
+```yaml
+services:
+  - type: web
+    name: gcs-devops-api
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    healthCheckPath: /api/health
+```
+
+### Deploy Manual no Render
+
+Se você não configurou o webhook, pode fazer deploy manual:
+
+1. Acesse o [Render Dashboard](https://dashboard.render.com)
+2. Selecione seu serviço
+3. Clique em "Manual Deploy" > "Deploy latest commit"
+
+### Verificar Status do Deploy
+
+**Via Dashboard:**
+
+- Acesse `Deploys` para ver histórico
+- Acesse `Logs` > `Deploy Logs` para ver o processo de build
+- Acesse `Logs` > `Runtime Logs` para ver logs da aplicação
+
+**Via API (após deploy):**
+
+```bash
+# Testar se a aplicação está respondendo
+curl https://gcs-devops-api.onrender.com/api/health
+
+# Acessar Swagger docs
+https://gcs-devops-api.onrender.com/api-docs
+```
+
+### Importante sobre o Render Free Tier
+
+- **Hibernação**: Serviços inativos hibernam após 15 minutos
+- **Cold Start**: Primeira requisição após hibernação leva 30-60s
+- **Build Time**: Limite de 15 minutos para o build
+- **RAM**: 512 MB disponíveis
+
+Para mais detalhes, consulte: [.github/RENDER.md](.github/RENDER.md)
 
 ## Otimizações Implementadas
 
@@ -163,6 +262,15 @@ curl http://localhost:3000/health
 
 - Verifique se os secrets do Docker Hub estão configurados
 - Verifique se o Dockerfile está correto: `docker build -t test .`
+- Se o deploy no Render falhar, verifique os logs no dashboard do Render
+
+### Deploy no Render falha
+
+- Verifique se o `RENDER_DEPLOY_HOOK` está configurado corretamente
+- Confirme que o webhook está ativo no Render
+- Verifique os Deploy Logs no dashboard do Render para erros específicos
+- Certifique-se de que `typescript` está nas `dependencies` do `package.json`
+- Verifique se o build local funciona: `npm install && npm run build`
 
 ### Container não inicia
 
@@ -184,4 +292,3 @@ O pipeline gera badges que podem ser adicionados ao README:
 - Adicionar notificações (Slack, Discord, Email)
 - Implementar rollback automático em caso de falhas
 - Adicionar análise de segurança (SAST/DAST)
-
