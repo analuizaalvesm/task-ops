@@ -321,10 +321,6 @@ O projeto implementa testes automatizados em **três níveis**, conforme requisi
   - 6 arquivos de testes unitários (services + utils)
   - 3 arquivos de testes de integração (API endpoints)
 
-## Licença
-
-CC0 1.0 Universal
-
 ## Pipeline CI/CD e Deploy
 
 ![CI/CD](https://github.com/analuizaalvesm/gcs-devops/actions/workflows/ci-cd.yml/badge.svg)
@@ -383,7 +379,6 @@ O projeto implementa pipeline CI/CD completo com **GitHub Actions**:
 
 ### Documentação Detalhada
 
-Para informações completas sobre pipeline, deploy e Docker:
+Para informações completas sobre a pipeline, deploy e Docker:
 
-- **Pipeline e CI/CD**: [.github/PIPELINE.md](.github/PIPELINE.md)
-- **Deploy no Render**: [.github/RENDER.md](.github/RENDER.md)
+- **Pipeline, CI/CD e Deploy**: [.github/PIPELINE.md](.github/README.md)
