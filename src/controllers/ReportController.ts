@@ -10,10 +10,25 @@ export class ReportController {
    */
   async generateReport(req: Request, res: Response): Promise<void> {
     try {
+      const { type, generatedBy, startDate, endDate } = req.body;
+
+      // Validate required fields
+      if (!type || !generatedBy || !startDate || !endDate) {
+        const response: ApiResponse = {
+          success: false,
+          error:
+            "Missing required fields: type, generatedBy, startDate, endDate",
+          timestamp: new Date().toISOString(),
+        };
+        res.status(400).json(response);
+        return;
+      }
+
       const reportData: GenerateReportDTO = {
-        ...req.body,
-        startDate: new Date(req.body.startDate),
-        endDate: new Date(req.body.endDate),
+        type,
+        generatedBy,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
       };
 
       const report = await reportService.generateReport(reportData);

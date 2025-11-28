@@ -1,5 +1,5 @@
-import { UserService } from "../services/UserService";
-import { CreateUserDTO } from "../models/User";
+import { UserService } from "../../../services/UserService";
+import { CreateUserDTO } from "../../../models/User";
 
 describe("UserService", () => {
   let userService: UserService;

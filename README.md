@@ -41,10 +41,23 @@ gcs-devops/
 │   │   ├── formatters.ts
 │   │   ├── logger.ts
 │   │   └── helpers.ts
-│   ├── tests/              # Testes unitários
-│   │   ├── UserService.test.ts
-│   │   ├── TaskService.test.ts
-│   │   └── validators.test.ts
+│   ├── config/             # Configurações
+│   │   └── swagger.ts
+│   ├── tests/              # Testes
+│   │   ├── unit/          # Testes unitários
+│   │   │   ├── services/  # Testes de serviços
+│   │   │   │   ├── UserService.test.ts
+│   │   │   │   ├── TaskService.test.ts
+│   │   │   │   └── ReportService.test.ts
+│   │   │   └── utils/     # Testes de utilitários
+│   │   │       ├── validators.test.ts
+│   │   │       ├── formatters.test.ts
+│   │   │       └── helpers.test.ts
+│   │   ├── integration/   # Testes de integração
+│   │   │   ├── users.integration.test.ts
+│   │   │   ├── tasks.integration.test.ts
+│   │   │   └── reports.integration.test.ts
+│   │   └── README.md
 │   ├── app.ts              # Configuração do Express
 │   └── server.ts           # Inicialização do servidor
 ├── package.json
@@ -186,14 +199,36 @@ curl -X POST http://localhost:3000/api/reports \
 
 ## Testes
 
-O projeto inclui testes unitários para:
+O projeto possui uma suíte completa de testes organizados em:
 
-- Services (UserService, TaskService)
-- Validators (funções de validação)
+### Testes Unitários (`unit/`)
+
+- **Services**: UserService, TaskService, ReportService (20 testes)
+- **Utils**: validators, formatters, helpers (62 testes)
+
+### Testes de Integração (`integration/`)
+
+- **API Endpoints**: Users, Tasks, Reports (30 testes)
+- Testes completos de CRUD com SuperTest
+- Validação de fluxos e respostas HTTP
+
+### Executar Testes
 
 ```bash
+# Todos os testes
 npm test
+
+# Com cobertura
+npm run test:coverage
+
+# Apenas unitários
+npm test -- unit/
+
+# Apenas integração
+npm test -- integration/
 ```
+
+**Cobertura Atual**: 74.29% (93 testes passando)
 
 ## Tecnologias Utilizadas
 
@@ -206,7 +241,7 @@ npm test
 **Testes**
 
 - Jest (testes unitários)
-- SuperTest (testes de integração - a implementar)
+- SuperTest (testes de integração)
 - Cypress/Playwright (testes de aceitação - a implementar)
 
 **Pipeline CI/CD**
@@ -256,7 +291,10 @@ O projeto implementa testes em três níveis, conforme o roteiro do trabalho:
 
 - **Routes** (4 arquivos): Organização das rotas da API
 - **Models** (4 arquivos): Definição de tipos e interfaces TypeScript
-- **Tests** (3 arquivos): Cobertura de testes unitários
+- **Config** (1 arquivo): Configuração do Swagger/OpenAPI
+- **Tests** (9 arquivos):
+  - 6 arquivos de testes unitários (services + utils)
+  - 3 arquivos de testes de integração (API endpoints)
 
 ## Licença
 

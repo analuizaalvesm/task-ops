@@ -4,7 +4,7 @@ import {
   isFutureDate,
   hasMinLength,
   hasRequiredFields,
-} from "../utils/validators";
+} from "../../../utils/validators";
 
 describe("Validators", () => {
   describe("isValidEmail", () => {
@@ -61,7 +61,10 @@ describe("Validators", () => {
     });
 
     it("should return false when required fields are missing", () => {
-      const obj: { name: string; email: string; age?: number } = { name: "John", email: "" };
+      const obj: { name: string; email: string; age?: number } = {
+        name: "John",
+        email: "",
+      };
       expect(hasRequiredFields(obj, ["name", "email", "age"])).toBe(false);
     });
   });

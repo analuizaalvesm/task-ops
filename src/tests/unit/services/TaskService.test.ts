@@ -1,5 +1,5 @@
-import { TaskService } from "../services/TaskService";
-import { CreateTaskDTO, TaskStatus, TaskPriority } from "../models/Task";
+import { TaskService } from "../../../services/TaskService";
+import { CreateTaskDTO, TaskStatus, TaskPriority } from "../../../models/Task";
 
 describe("TaskService", () => {
   let taskService: TaskService;
