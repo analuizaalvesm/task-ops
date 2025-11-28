@@ -184,3 +184,4 @@ O pipeline gera badges que podem ser adicionados ao README:
 - Adicionar notificações (Slack, Discord, Email)
 - Implementar rollback automático em caso de falhas
 - Adicionar análise de segurança (SAST/DAST)
+

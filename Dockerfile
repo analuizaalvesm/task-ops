@@ -7,13 +7,13 @@ WORKDIR /app
 # Copiar arquivos de dependências
 COPY package*.json ./
 
-# Instalar dependências de produção
-RUN npm ci --only=production && npm cache clean --force
+# Instalar TODAS as dependências (incluindo devDependencies para o build)
+RUN npm ci && npm cache clean --force
 
 # Copiar código fonte
 COPY . .
 
-# Build da aplicação
+# Build da aplicação (TypeScript precisa estar instalado)
 RUN npm run build
 
 # Stage de produção
@@ -28,10 +28,14 @@ RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 # Definir diretório de trabalho
 WORKDIR /app
 
-# Copiar dependências e build do stage anterior
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+# Copiar package.json para instalar apenas dependências de produção
+COPY package*.json ./
+
+# Instalar apenas dependências de produção no stage final
+RUN npm ci --only=production && npm cache clean --force
+
+# Copiar build do stage anterior
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nodejs:nodejs /app/package*.json ./
 
 # Mudar para usuário não-root
 USER nodejs
