@@ -1,5 +1,8 @@
 # Trabalho Prático 1 - Gerência de Configuração e Evolução de Software
 
+![CI/CD Pipeline](https://github.com/analuizaalvesm/gcs-devops/actions/workflows/ci-cd.yml/badge.svg)
+[![Uptime](https://img.shields.io/badge/uptime-monitor-brightgreen)](https://gcs-devops-api.onrender.com/api/health)
+
 Backend API desenvolvida com **Node.js**, **TypeScript** e **Express**, seguindo uma arquitetura limpa e escalável.
 
 Este projeto foi desenvolvido como parte do Trabalho Prático 1 (TP1) da disciplina Gerência de Configuração e Evolução de Software. O objetivo é aplicar conceitos de Gestão de Configuração, Integração Contínua (CI), Entrega Contínua (CD), Empacotamento, Testes Automatizados e Implantação.

@@ -277,14 +277,6 @@ Para mais detalhes, consulte: [.github/RENDER.md](.github/RENDER.md)
 - Verifique os logs: `docker logs <container-id>`
 - Teste localmente: `docker run -p 3000:3000 <imagem>`
 
-## Monitoramento
-
-O pipeline gera badges que podem ser adicionados ao README:
-
-```markdown
-![CI/CD](https://github.com/<usuario>/<repo>/actions/workflows/ci-cd.yml/badge.svg)
-```
-
 ## Próximos Passos
 
 - Adicionar testes de performance
