@@ -265,11 +265,11 @@ npm run test:e2e:report
 
 **Pipeline CI/CD**
 
-- GitHub Actions (a implementar)
+- GitHub Actions
 
 **Empacotamento & Deploy**
 
-- Docker (a implementar)
+- Docker
 - Render ou Railway (deploy gratuito - a implementar)
 
 ## Testes Automatizados
@@ -333,3 +333,74 @@ O projeto implementa testes automatizados em **três níveis**, conforme requisi
 ## Licença
 
 CC0 1.0 Universal
+
+## Pipeline CI/CD
+
+Este projeto possui um pipeline completo de CI/CD implementado com GitHub Actions. O pipeline é executado automaticamente em todo push para a branch `main`.
+
+### Etapas do Pipeline
+
+#### 1. Commit (Build e Testes)
+
+- Instala dependências
+- Compila TypeScript
+- Executa testes unitários
+- Executa testes de integração
+- Gera relatório de cobertura
+
+#### 2. Acceptance Tests (Testes E2E)
+
+- Instala navegadores Playwright
+- Executa testes de aceitação
+- Gera relatórios visuais
+
+#### 3. Release (Empacotamento e Deploy)
+
+- Cria pacote npm
+- Constrói imagem Docker
+- Publica no Docker Hub
+- Deploy automático no Render (opcional)
+
+#### 4. Test Container (Opcional)
+
+- Testa a imagem Docker
+- Valida health check
+- Verifica logs do container
+
+### Configuração do Pipeline
+
+Para configurar o pipeline no seu repositório:
+
+1. Configure os secrets no GitHub:
+
+   - `DOCKER_USERNAME`: seu usuário do Docker Hub
+   - `DOCKER_PASSWORD`: seu token do Docker Hub
+   - `RENDER_DEPLOY_HOOK`: URL do deploy hook do Render (opcional)
+
+2. Faça push para a branch `main` e o pipeline será executado automaticamente
+
+Para mais detalhes, consulte: [.github/PIPELINE.md](.github/PIPELINE.md)
+
+### Status do Pipeline
+
+![CI/CD](https://github.com/analuizaalvesm/gcs-devops/actions/workflows/ci-cd.yml/badge.svg)
+
+## Docker
+
+### Build Local
+
+```bash
+docker build -t gcs-devops .
+```
+
+### Executar Container
+
+```bash
+docker run -p 3000:3000 gcs-devops
+```
+
+### Pull do Docker Hub
+
+```bash
+docker pull <seu-usuario>/gcs-devops:latest
+```

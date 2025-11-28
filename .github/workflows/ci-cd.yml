@@ -1,0 +1,221 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: "20.x"
+  DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/gcs-devops
+
+jobs:
+  # Etapa 4.1: Commit (Build, Unit Tests, Integration Tests)
+  commit:
+    name: Build e Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Realizar build (TypeScript)
+        run: npm run build
+
+      - name: Executar testes de unidade
+        run: npm test -- unit/
+
+      - name: Executar testes de integração
+        run: npm test -- integration/
+
+      - name: Gerar relatório de cobertura
+        run: npm run test:coverage
+
+      - name: Upload do artefato de build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+          retention-days: 1
+
+      - name: Upload do relatório de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+  # Etapa 4.2: Teste de Aceitação (E2E com Playwright)
+  acceptance-tests:
+    name: Testes de Aceitação (E2E)
+    runs-on: ubuntu-latest
+    needs: commit
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar navegadores do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Executar testes E2E
+        run: npm run test:e2e
+
+      - name: Upload do relatório Playwright
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload dos resultados dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
+
+  # Etapa 4.3: Lançamento (Build Docker e Deploy)
+  release:
+    name: Empacotamento e Deploy
+    runs-on: ubuntu-latest
+    needs: [commit, acceptance-tests]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Realizar build
+        run: npm run build
+
+      - name: Baixar artefato de build
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+
+      - name: Criar pacote (tarball)
+        run: |
+          npm pack
+          mkdir -p package
+          mv *.tgz package/
+
+      - name: Upload do pacote
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: package/*.tgz
+          retention-days: 30
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extrair metadados do Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build e Push da imagem Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy no Render
+        if: secrets.RENDER_DEPLOY_HOOK != ''
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+  # Job Opcional: Testar Container Docker
+  test-container:
+    name: Testar Container Docker
+    runs-on: ubuntu-latest
+    needs: release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull da imagem Docker
+        run: docker pull ${{ env.DOCKER_IMAGE_NAME }}:latest
+
+      - name: Executar container
+        run: |
+          docker run -d \
+            --name gcs-devops-test \
+            -p 3000:3000 \
+            ${{ env.DOCKER_IMAGE_NAME }}:latest
+
+      - name: Aguardar container inicializar
+        run: sleep 10
+
+      - name: Testar health check
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/health)
+          if [ $response -eq 200 ]; then
+            echo "Health check passou! Container está funcionando."
+          else
+            echo "Health check falhou com status $response"
+            docker logs gcs-devops-test
+            exit 1
+          fi
+
+      - name: Verificar logs do container
+        if: always()
+        run: docker logs gcs-devops-test
+
+      - name: Parar e remover container
+        if: always()
+        run: |
+          docker stop gcs-devops-test
+          docker rm gcs-devops-test
