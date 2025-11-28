@@ -270,7 +270,7 @@ npm run test:e2e:report
 **Empacotamento & Deploy**
 
 - Docker
-- Render ou Railway (deploy gratuito - a implementar)
+- Render
 
 ## Testes Automatizados
 
@@ -404,3 +404,24 @@ docker run -p 3000:3000 gcs-devops
 ```bash
 docker pull <seu-usuario>/gcs-devops:latest
 ```
+
+## Deploy no Render
+
+A aplicação está configurada para deploy automático no Render.
+
+### Configuração Rápida
+
+1. O arquivo `render.yaml` já está configurado na raiz do projeto
+2. Configure o secret `RENDER_DEPLOY_HOOK` no GitHub (opcional para deploy automático via CI/CD)
+3. O deploy acontecerá automaticamente após push para `main`
+
+### Documentação Completa
+
+Para instruções detalhadas de deploy no Render, consulte: [.github/RENDER.md](.github/RENDER.md)
+
+### Notas Importantes
+
+- TypeScript está configurado como dependência de produção para o build no Render
+- Build command: `npm install && npm run build`
+- Start command: `npm start` (executa `node dist/server.js`)
+- Health check configurado em `/health`
