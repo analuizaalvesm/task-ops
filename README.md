@@ -260,4 +260,4 @@ O projeto implementa testes em três níveis, conforme o roteiro do trabalho:
 
 ## Licença
 
-MIT
+CC0 1.0 Universal
