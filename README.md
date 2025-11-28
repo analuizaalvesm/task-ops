@@ -57,9 +57,14 @@ gcs-devops/
 │   │   │   ├── users.integration.test.ts
 │   │   │   ├── tasks.integration.test.ts
 │   │   │   └── reports.integration.test.ts
+│   │   ├── e2e/           # Testes E2E (End-to-End)
+│   │   │   ├── complete-flow.spec.ts
+│   │   │   ├── error-handling.spec.ts
+│   │   │   └── README.md
 │   │   └── README.md
 │   ├── app.ts              # Configuração do Express
 │   └── server.ts           # Inicialização do servidor
+├── playwright.config.ts    # Configuração do Playwright
 ├── package.json
 ├── tsconfig.json
 ├── jest.config.js
@@ -199,12 +204,13 @@ curl -X POST http://localhost:3000/api/reports \
 
 ## Testes
 
-O projeto possui uma suíte completa de testes organizados em:
+O projeto possui uma suíte completa de testes automatizados em 3 níveis:
 
 ### Testes Unitários (`unit/`)
 
 - **Services**: UserService, TaskService, ReportService (20 testes)
 - **Utils**: validators, formatters, helpers (62 testes)
+- Testa funções e classes isoladas
 
 ### Testes de Integração (`integration/`)
 
@@ -212,10 +218,16 @@ O projeto possui uma suíte completa de testes organizados em:
 - Testes completos de CRUD com SuperTest
 - Validação de fluxos e respostas HTTP
 
+### Testes E2E (End-to-End) (`e2e/`)
+
+- **Fluxo Completo**: Criar usuário → tarefa → relatório (16 cenários)
+- **Validações e Erros**: Tratamento de erros e validações (8 cenários)
+- Simula uso real da aplicação com Playwright
+
 ### Executar Testes
 
 ```bash
-# Todos os testes
+# Todos os testes unitários e de integração
 npm test
 
 # Com cobertura
@@ -226,9 +238,16 @@ npm test -- unit/
 
 # Apenas integração
 npm test -- integration/
-```
 
-**Cobertura Atual**: 74.29% (93 testes passando)
+# Testes E2E (End-to-End)
+npm run test:e2e
+
+# E2E com interface visual
+npm run test:e2e:ui
+
+# Ver relatório dos testes E2E
+npm run test:e2e:report
+```
 
 ## Tecnologias Utilizadas
 
@@ -242,7 +261,7 @@ npm test -- integration/
 
 - Jest (testes unitários)
 - SuperTest (testes de integração)
-- Cypress/Playwright (testes de aceitação - a implementar)
+- Playwright (testes E2E/aceitação)
 
 **Pipeline CI/CD**
 
@@ -255,11 +274,26 @@ npm test -- integration/
 
 ## Testes Automatizados
 
-O projeto implementa testes em três níveis, conforme o roteiro do trabalho:
+O projeto implementa testes automatizados em **três níveis**, conforme requisitos do trabalho:
 
-- Testes de Unidade
-- Validação de funções isoladas
-- Testes de Aceitação
+### 1. Testes de Unidade (Jest)
+
+- **82 testes** validando funções e classes isoladas
+- Cobertura de services, utils, validators e formatters
+- Execução rápida (~2s)
+
+### 2. Testes de Integração (SuperTest)
+
+- **30 testes** validando endpoints da API
+- Testes de CRUD completos para Users, Tasks e Reports
+- Validação de respostas HTTP e persistência
+
+### 3. Testes de Aceitação/E2E (Playwright)
+
+- **24 testes** simulando fluxos reais de uso
+- Fluxo completo: Criar usuário → tarefa → relatório → cleanup
+- Validação de erros e tratamento de exceções
+- Relatórios visuais HTML
 
 ## Contagem de Arquivos e Funções
 

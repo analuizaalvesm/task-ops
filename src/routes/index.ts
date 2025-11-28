@@ -31,9 +31,12 @@ const router = Router();
  */
 router.get("/health", (_req, res) => {
   res.status(200).json({
-    status: "OK",
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
+    success: true,
+    data: {
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    },
   });
 });
 
