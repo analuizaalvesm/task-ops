@@ -326,8 +326,6 @@ O projeto implementa testes automatizados em **três níveis**, conforme requisi
 
 ## Pipeline CI/CD e Deploy
 
-![CI/CD](https://github.com/analuizaalvesm/gcs-devops/actions/workflows/ci-cd.yml/badge.svg)
-
 ### Automação Completa
 
 O projeto implementa pipeline CI/CD completo com **GitHub Actions**:
