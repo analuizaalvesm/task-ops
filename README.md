@@ -384,4 +384,4 @@ O projeto implementa pipeline CI/CD completo com **GitHub Actions**:
 
 Para informações completas sobre a pipeline, deploy e Docker:
 
-- **Pipeline, CI/CD e Deploy**: [.github/PIPELINE.md](.github/README.md)
+- **Pipeline, CI/CD e Deploy**: [.github/PIPELINE.md](.github/PIPELINE.md)
