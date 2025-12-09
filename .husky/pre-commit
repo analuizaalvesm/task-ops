@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🧪 Executando testes unitários..."
+npm run test:unit
+
+echo "✨ Executando lint-staged..."
+npx lint-staged
