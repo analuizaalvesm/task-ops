@@ -15,7 +15,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
-    "prepare": "is-ci || husky"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then is-ci || husky; fi"
   },
   "keywords": [
     "api",
