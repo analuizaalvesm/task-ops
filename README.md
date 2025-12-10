@@ -50,12 +50,55 @@ gcs-devops/
 O projeto utiliza **Git** com estratégia de branching simplificada:
 
 - **Branch principal**: `main` (protegida)
-- **Commits**: Seguem padrão conventional commits
+- **Commits**: Seguem padrão conventional commits e validações automáticas
   - `feat:` nova funcionalidade
   - `fix:` correção de bug
-  - `test:` adição/modificação de testes
   - `docs:` documentação
+  - `style:` formatação sem alterar lógica
+  - `refactor:` refatoração sem bug/feature
+  - `perf:` melhoria de performance
+  - `test:` adição/modificação de testes
+  - `build:` build/dependências
+  - `ci:` arquivos/scripts de CI
   - `chore:` tarefas de manutenção
+  - `revert:` revert de commit
+
+### Diretrizes de Commit
+
+Este projeto utiliza commits semânticos (Conventional Commits) e validação automática via Husky + Commitlint.
+
+Formato das mensagens:
+
+```
+<type>: <description>
+
+[optional body]
+
+[optional footer]
+```
+
+Exemplos:
+
+```bash
+feat: Adiciona endpoint para criação de usuários
+fix: Corrige validação de email no UserService
+docs: Atualiza README com instruções de instalação
+test: Adiciona testes unitários para TaskController
+refactor: Reorganiza estrutura de pastas dos models
+```
+
+Validações automáticas de pré-commit:
+
+- Verificação do formato da mensagem (`commitlint`)
+- Execução de testes unitários (`npm run test:unit`)
+- `lint-staged` nos arquivos modificados
+
+Arquivos de configuração relevantes:
+
+- `.commitlintrc.json` — regras de commits semânticos
+- `.husky/pre-commit` — executa testes e lint-staged
+- `.husky/commit-msg` — valida a mensagem de commit
+- `package.json` — scripts e lint-staged
 
 **Fluxo de trabalho:**
 
@@ -101,7 +144,9 @@ A API possui documentação interativa completa usando Swagger/OpenAPI.
 
 ### Acessar a documentação:
 
-Após iniciar o servidor, acesse:
+**Ambiente de Desenvolvimento/Homologação:**
+
+Após iniciar o servidor localmente, acesse:
 
 ```
 http://localhost:3000/api-docs
@@ -113,6 +158,8 @@ A interface Swagger permite:
 - Testar as requisições diretamente no navegador
 - Ver exemplos de request/response
 - Verificar schemas e validações
+
+> **⚠️ Segurança:** A documentação Swagger é **automaticamente desabilitada em produção** (`NODE_ENV=production`). Ao tentar acessar `/api-docs` em produção, você receberá uma resposta `403 Forbidden` com a mensagem: "Documentação não disponível em produção".
 
 ## Endpoints da API
 

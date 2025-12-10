@@ -12,15 +12,22 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Swagger documentation
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    customCss: ".swagger-ui .topbar { display: none }",
-    customSiteTitle: "GCS DevOps API Docs",
-  })
-);
+// Swagger documentation (disabled in production)
+if (process.env.NODE_ENV !== "production") {
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: ".swagger-ui .topbar { display: none }",
+      customSiteTitle: "GCS DevOps API Docs",
+    })
+  );
+  logger.info("Swagger UI habilitado em /api-docs");
+} else {
+  app.get("/api-docs", (_req: Request, res: Response) => {
+    res.status(403).json({ error: "Documentação não disponível em produção" });
+  });
+}
 
 // Request logging middleware
 app.use((req: Request, _res: Response, next: NextFunction) => {
@@ -36,7 +43,8 @@ app.use("/api", routes);
 
 // Root endpoint
 app.get("/", (_req: Request, res: Response) => {
-  res.json({
+  const isProd = process.env.NODE_ENV === "production";
+  const response: Record<string, any> = {
     message: "GCS DevOps API",
     version: "1.0.0",
     endpoints: {
@@ -44,9 +52,15 @@ app.get("/", (_req: Request, res: Response) => {
       tasks: "/api/tasks",
       reports: "/api/reports",
       health: "/api/health",
-      documentation: "/api-docs",
     },
-  });
+    environment: process.env.NODE_ENV || "development",
+  };
+
+  if (!isProd) {
+    response.endpoints.documentation = "/api-docs";
+  }
+
+  res.json(response);
 });
 
 // 404 handler
