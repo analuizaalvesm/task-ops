@@ -418,4 +418,4 @@ Para informações completas sobre a pipeline, deploy e Docker:
 
 ## Licença
 
-Este projeto está licenciado nos termos da licença Creative Commons.
+Este projeto está licenciado nos termos da Creative Commons.
