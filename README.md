@@ -205,18 +205,26 @@ O projeto possui uma suíte completa de testes automatizados em 3 níveis:
 - **Services**: UserService, TaskService, ReportService (20 testes)
 - **Utils**: validators, formatters, helpers (62 testes)
 - Testa funções e classes isoladas
+- **82 testes** validando funções e classes isoladas
+- Cobertura de services, utils, validators e formatters
+- Execução rápida (~2s)
 
 ### Testes de Integração (`integration/`)
 
 - **API Endpoints**: Users, Tasks, Reports (30 testes)
-- Testes completos de CRUD com SuperTest
+- Testes de CRUD completos para Users, Tasks e Reports com SuperTest
 - Validação de fluxos e respostas HTTP
+- **30 testes** validando endpoints da API
 
 ### Testes E2E (End-to-End) (`e2e/`)
 
 - **Fluxo Completo**: Criar usuário → tarefa → relatório (16 cenários)
 - **Validações e Erros**: Tratamento de erros e validações (8 cenários)
 - Simula uso real da aplicação com Playwright
+- **24 testes** simulando fluxos reais de uso
+- Fluxo completo: Criar usuário → tarefa → relatório → cleanup
+- Validação de erros e tratamento de exceções
+- Relatórios visuais HTML
 
 ### Executar Testes
 
@@ -265,29 +273,6 @@ npm run test:e2e:report
 
 - Docker
 - Render
-
-## Testes Automatizados
-
-O projeto implementa testes automatizados em **três níveis**, conforme requisitos do trabalho:
-
-### 1. Testes de Unidade (Jest)
-
-- **82 testes** validando funções e classes isoladas
-- Cobertura de services, utils, validators e formatters
-- Execução rápida (~2s)
-
-### 2. Testes de Integração (SuperTest)
-
-- **30 testes** validando endpoints da API
-- Testes de CRUD completos para Users, Tasks e Reports
-- Validação de respostas HTTP e persistência
-
-### 3. Testes de Aceitação/E2E (Playwright)
-
-- **24 testes** simulando fluxos reais de uso
-- Fluxo completo: Criar usuário → tarefa → relatório → cleanup
-- Validação de erros e tratamento de exceções
-- Relatórios visuais HTML
 
 ## Contagem de Arquivos e Funções
 
