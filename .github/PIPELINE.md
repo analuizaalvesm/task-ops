@@ -248,23 +248,23 @@ Para mais detalhes, consulte: [.github/RENDER.md](.github/RENDER.md)
 
 ## Troubleshooting
 
-### Pipeline falha no job "commit"
+### Erro no Job de Commit (CI)
 
 - Verifique se todos os testes passam localmente: `npm test`
 - Verifique se o build funciona: `npm run build`
 
-### Pipeline falha no job "acceptance-tests"
+### Erro nos Testes de Aceitação (E2E)
 
 - Execute os testes E2E localmente: `npm run test:e2e`
 - Verifique se o Playwright está instalado corretamente
 
-### Pipeline falha no job "release"
+### Erro no Job de Release
 
 - Verifique se os secrets do Docker Hub estão configurados
 - Verifique se o Dockerfile está correto: `docker build -t test .`
 - Se o deploy no Render falhar, verifique os logs no dashboard do Render
 
-### Deploy no Render falha
+### Erro no Deploy no Render
 
 - Verifique se o `RENDER_DEPLOY_HOOK` está configurado corretamente
 - Confirme que o webhook está ativo no Render
@@ -272,15 +272,7 @@ Para mais detalhes, consulte: [.github/RENDER.md](.github/RENDER.md)
 - Certifique-se de que `typescript` está nas `dependencies` do `package.json`
 - Verifique se o build local funciona: `npm install && npm run build`
 
-### Container não inicia
+### Erro na Inicialização do Container
 
 - Verifique os logs: `docker logs <container-id>`
 - Teste localmente: `docker run -p 3000:3000 <imagem>`
-
-## Próximos Passos
-
-- Adicionar testes de performance
-- Implementar deploy em staging antes de produção
-- Adicionar notificações (Slack, Discord, Email)
-- Implementar rollback automático em caso de falhas
-- Adicionar análise de segurança (SAST/DAST)
