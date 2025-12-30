@@ -373,10 +373,7 @@ O projeto implementa pipeline CI/CD completo com **GitHub Actions**:
 - Imagens publicadas automaticamente
 - Disponível para pull: `docker pull <usuario>/gcs-devops:latest`
 
-### Documentação Detalhada
-
 Para informações completas sobre a pipeline, deploy e Docker:
-
 - **Pipeline, CI/CD e Deploy**: [.github/PIPELINE.md](.github/PIPELINE.md)
 
 ## Licença
