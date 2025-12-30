@@ -159,8 +159,6 @@ A interface Swagger permite:
 - Ver exemplos de request/response
 - Verificar schemas e validações
 
-> **⚠️ Segurança:** A documentação Swagger é **automaticamente desabilitada em produção** (`NODE_ENV=production`). Ao tentar acessar `/api-docs` em produção, você receberá uma resposta `403 Forbidden` com a mensagem: "Documentação não disponível em produção".
-
 ## Endpoints da API
 
 ### Base URL
