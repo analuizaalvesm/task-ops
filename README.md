@@ -319,41 +319,6 @@ npm run test:e2e:report
 - Docker
 - Render
 
-## Contagem de Arquivos e Funções
-
-### Estatísticas do Projeto:
-
-- **Total de arquivos**: 20+
-- **Total de funções/métodos**: 50+
-
-### Distribuição Detalhada:
-
-- **Controllers** (3 arquivos): 15 métodos
-
-  - UserController: 5 métodos (create, getAll, getById, update, delete)
-  - TaskController: 7 métodos (create, getAll, getById, update, delete, getStatistics, getOverdue)
-  - ReportController: 5 métodos (generate, getAll, getById, delete, getSummaryStatistics)
-
-- **Services** (3 arquivos): 18 métodos
-
-  - UserService: 6 métodos (createUser, getAllUsers, getUserById, updateUser, deleteUser, getActiveUsersCount)
-  - TaskService: 8 métodos (createTask, getAllTasks, getTaskById, updateTask, deleteTask, getTasksByUser, getTasksByStatus, getTaskStatistics)
-  - ReportService: 6 métodos (generateReport, getAllReports, getReportById, deleteReport, getReportsByType, getSummaryStatistics)
-
-- **Utils** (4 arquivos): 17+ funções auxiliares
-
-  - validators.ts: 5 funções (isValidEmail, isNotEmpty, isFutureDate, hasMinLength, hasRequiredFields)
-  - formatters.ts: 6 funções (formatDate, formatDateReadable, capitalizeFirstLetter, formatPercentage, truncateString, objectToQueryString)
-  - logger.ts: 4 métodos (info, warn, error, debug)
-  - helpers.ts: 5 funções (generateId, delay, deepClone, safeJsonParse, isEmpty)
-
-- **Routes** (4 arquivos): Organização das rotas da API
-- **Models** (4 arquivos): Definição de tipos e interfaces TypeScript
-- **Config** (1 arquivo): Configuração do Swagger/OpenAPI
-- **Tests** (9 arquivos):
-  - 6 arquivos de testes unitários (services + utils)
-  - 3 arquivos de testes de integração (API endpoints)
-
 ## Pipeline CI/CD e Deploy
 
 ### Automação Completa
