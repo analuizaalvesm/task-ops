@@ -1,9 +1,9 @@
-# TaskReport - Configuration Management and Software Evolution
+# TaskOps - Configuration Management and Software Evolution
 
 ![CI/CD Pipeline](https://github.com/analuizaalvesm/gcs-devops/actions/workflows/ci-cd.yml/badge.svg)
 [![Uptime](https://img.shields.io/badge/uptime-monitor-brightgreen)](https://gcs-devops-api.onrender.com/api/health)
 
-**TaskReport** é uma API simples desenvolvida com Node.js, TypeScript e Express, estruturada com foco em uma arquitetura limpa, modular e escalável. O projeto foi desenvolvido no contexto do Trabalho Prático 1 (TP1) da disciplina Gerência de Configuração e Evolução de Software, com o objetivo de aplicar, de forma prática, conceitos fundamentais como Gestão de Configuração, Integração Contínua (CI), Entrega Contínua (CD), empacotamento, testes automatizados e implantação de software.
+**TaskOps** é uma API simples desenvolvida com Node.js, TypeScript e Express, estruturada com foco em uma arquitetura limpa, modular e escalável. O projeto foi desenvolvido no contexto do Trabalho Prático 1 (TP1) da disciplina Gerência de Configuração e Evolução de Software, com o objetivo de aplicar, de forma prática, conceitos fundamentais como Gestão de Configuração, Integração Contínua (CI), Entrega Contínua (CD), empacotamento, testes automatizados e implantação de software.
 
 ## Requisitos
 
