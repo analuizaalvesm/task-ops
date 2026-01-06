@@ -1,11 +1,9 @@
-# Trabalho Prático 1 - Gerência de Configuração e Evolução de Software
+# TaskReport - Configuration Management and Software Evolution
 
 ![CI/CD Pipeline](https://github.com/analuizaalvesm/gcs-devops/actions/workflows/ci-cd.yml/badge.svg)
 [![Uptime](https://img.shields.io/badge/uptime-monitor-brightgreen)](https://gcs-devops-api.onrender.com/api/health)
 
-Backend API desenvolvida com **Node.js**, **TypeScript** e **Express**, seguindo uma arquitetura limpa e escalável.
-
-Este projeto foi desenvolvido como parte do Trabalho Prático 1 (TP1) da disciplina Gerência de Configuração e Evolução de Software. O objetivo é aplicar conceitos de Gestão de Configuração, Integração Contínua (CI), Entrega Contínua (CD), Empacotamento, Testes Automatizados e Implantação.
+**TaskReport** é uma API simples desenvolvida com Node.js, TypeScript e Express, estruturada com foco em uma arquitetura limpa, modular e escalável. O projeto foi desenvolvido no contexto do Trabalho Prático 1 (TP1) da disciplina Gerência de Configuração e Evolução de Software, com o objetivo de aplicar, de forma prática, conceitos fundamentais como Gestão de Configuração, Integração Contínua (CI), Entrega Contínua (CD), empacotamento, testes automatizados e implantação de software.
 
 ## Requisitos
 
@@ -165,12 +163,6 @@ A interface Swagger permite:
 
 ```
 http://localhost:3000/api
-```
-
-### Health Check
-
-```
-GET /api/health
 ```
 
 ### Users (Usuários)
